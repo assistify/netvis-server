@@ -40,6 +40,9 @@ module.exports = class Model {
   }
 
   addNode(type, node) {
+    if (this.store.rooms.length + this.store.persons.length + this.store.topics.length === 0) {
+      this.notifyListeners({type: 'deleteNode', node: {id: -1}})
+    }
     const existing = this.find(type, node)
     if (existing) {
       existing.weight += node.weight
