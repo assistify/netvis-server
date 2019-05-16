@@ -10,6 +10,7 @@ const name = sourceMatch ? sourceMatch[2] : runsStatic ? 'data.json' : type + 's
 const linkTitle = Handlebars.compile(texts.linkTitle)
 const logger = console
 const thresholdField = document.getElementById('threshold')
+const personFilter = document.getElementById('filter-persons')
 
 let network
 let minWeight = 0
@@ -166,22 +167,42 @@ script.addEventListener('load', function () {
     network.nodes.filter(n => n.className === 'room').forEach(n => {
       const newVisibility = n.weight >= thresholdField.value
       if (newVisibility) {
-          logger.info(n.weight)
-          n.links.topics.forEach(c => {
-            c.target.visible = true
-            nodes2Show.push(c.target)
-            links2Show.push(c)
-          })
+        logger.info(n.weight)
+        n.links.topics.forEach(c => {
+          c.target.visible = true
+          nodes2Show.push(c.target)
+          links2Show.push(c)
+        })
+        if (personFilter.dataset.active !== 'true') {
           n.links.persons.forEach(c => {
             c.target.visible = true
             nodes2Show.push(c.target)
             links2Show.push(c)
           })
-          nodes2Show.push(n)
         }
+        nodes2Show.push(n)
+      }
       n.visible = newVisibility
     })
     network.diagram.add(nodes2Show, links2Show)
+    network.update()
+  })
+
+  personFilter.addEventListener('click', event => {
+    const visibleRooms = network.nodes
+      .filter(n => n.className === 'room')
+      .filter(r => r.weight >= thresholdField.value)
+      .map(r => r.id)
+    const personNodes = network.nodes
+      .filter(n => n.className === 'person')
+      .filter(p => visibleRooms.filter(r => Object.keys(p.linkedNodes).includes(r)))
+    const filterActive = event.target.dataset.active !== 'true'
+    event.target.setAttribute('data-active', filterActive)
+    if (filterActive) {
+      network.diagram.remove(personNodes, [])
+    } else {
+      network.diagram.add(personNodes, [])
+    }
     network.update()
   })
 
@@ -195,7 +216,7 @@ script.addEventListener('load', function () {
 
         case 'addNode':
           network.addNode(prepareNode(msg.node))
-           updateAndLogWeightRange(msg.node.weight)
+          updateAndLogWeightRange(msg.node.weight)
           network.update()
           break
 

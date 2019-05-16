@@ -357,3 +357,7 @@ svg {
 .line.level-3 {
   stroke-opacity: 0.3;
 }
+
+.filter[data-active="true"] {
+  background: #aaaaaa;
+}

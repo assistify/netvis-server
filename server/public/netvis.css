@@ -304,4 +304,8 @@ svg .node.topic .title .text-bg {
   stroke-opacity: 0.3;
 }
 
+.filter[data-active=true] {
+  background: #aaaaaa;
+}
+
 /*# sourceMappingURL=netvis.css.map */
