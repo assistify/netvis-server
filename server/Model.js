@@ -56,7 +56,7 @@ module.exports = class Model {
   }
 
   changeNode(id, type, change) {
-    this.notifyListeners({type: 'changeNode', change})
+    this.notifyListeners({type: 'changeNode', node: change})
   }
 
   addLink(node1, node2) {
