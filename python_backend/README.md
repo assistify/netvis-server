@@ -15,6 +15,7 @@ The container can be configured with the following environment variables:
 | MONGO_DB | Name of RC Database | Team |
 | MONGO_URL | URL of the MongoDB | mongodb://host.docker.internal:27017 |
 | SERVER_URL | Netvis server URL | http://host.docker.internal:3002 |
+| SKIP_TYPES | Room types to skip | "cdp" |
 
 Create an `.env` file with the desired variables.
 
