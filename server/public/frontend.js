@@ -55,7 +55,7 @@ script.addEventListener('load', function () {
       node.radius = Math.min(node.weight * 50, 150)
       node.fontSize = weight * 2
     } else {
-      node.radius = Math.min(Math.sqrt(node.weight) * 20, 150)
+      node.radius = Math.min(node.weight * 10, 250)
       node.fontSize = weight
     }
     return node
