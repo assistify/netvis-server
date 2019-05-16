@@ -16,9 +16,7 @@ def filter_nouns(content, tagged):
     tagged_d = dict(tagged)
     counter = 0
     for r in content:
-        if (content[r]['type'] in config.SKIP_TYPES):
-            del content[r]
-        content[r]['topics'] = [w for w in content[r]['topics'] if tagged_d[w][0] == 'N']
+        content[r]['topics'] = [w for w in content[r]['topics'] if w in tagged_d and tagged_d[w][0] == 'N']
         counter += len(content[r]['topics'])
     end = time.time()
     print('======> Filtering words ('+ str(counter) +') by nouns done in: ' + str(end - start))

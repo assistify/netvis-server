@@ -20,7 +20,7 @@ parser.add_argument('--filterw', type=int, help='Filter result by occurance (Int
 parser.add_argument('--mpc', type=int, help='Counter for multiprocessing (Int)', default=4)
 parser.add_argument('--redo_training', type=bool, help='Force retraining nlp model (Bool)', default=False)
 parser.add_argument('--redo_tagging', type=bool, help='Force retagging wordlist (Bool)', default=False)
-parser.add_argument('--skip_types', type=list, help='List of room types to skip (List)', default=[])
+parser.add_argument('--skip_types', action='append', help='List of room types to skip (List)', default=[])
 args = args = parser.parse_args()
 
 config.init(args)
@@ -60,6 +60,7 @@ else:
 if (len(to_tag)):
     tagger = loader.load_model()
     tagged += tagging.start_tagging(to_tag, tagger)
+    loader.save_tagged(tagged)
 
 content = postprocessing.filter_content(content, tagged)
 

@@ -18,4 +18,4 @@ def post_single_room(room):
 def post_all_rooms(content):
     for r in content:
         post_single_room(content[r])
-        time.sleep(1)
+        time.sleep(0.05)

@@ -22,7 +22,7 @@ def init(args):
     RESULT_NUMBER = args.res
     DATA_COUNT = args.datac
     FILTERW = args.filterw
-    MONGO_DB = args.db
+    MONGO_DB = args.db.replace('"', '')
     MONGO_URL = args.mongo_url
     FORCE_RETAG = args.redo_tagging
     FORCE_RETRAIN = args.redo_training

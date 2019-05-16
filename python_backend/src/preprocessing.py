@@ -24,15 +24,23 @@ def filter_words(msg):
 def load_all_data():
     start = time.time()
     client = MongoClient(config.MONGO_URL)
-    db=client.seec
+    db=client[config.MONGO_DB]
+    rldata =dict([(r['_id'], {"t": r['t'], "name": r['fname']}) for r in db.rocketchat_room.find({"fname": { "$exists": True }, "t": { "$exists": True }}, {"t": 1, "fname": 1})]) 
     rdata = dict([(r['_id'], {"t": r['t'], "name": r['name']}) for r in db.rocketchat_room.find({"name": { "$exists": True }, "t": { "$exists": True }}, {"t": 1, "name": 1})])
     mdata = db.rocketchat_message.find({}, {"msg": 1, "rid": 1, "u": 1}).limit(config.DATA_COUNT)
 
     content = {}
 
     for i in mdata:
+        if (not i['rid'] or i['rid'] == 'null' or i['rid'] == 'None'): continue
+        if (not i['msg'] or i['msg'] == 'null' or i['msg'] == 'None'): continue
+        if (not i['u'] or i['u'] == 'null' or i['u'] == 'None'): continue
         rid = i['rid'].encode('utf-8')
-        if (not rid in rdata): continue
+        if (not rid in rdata and not rid in rldata): continue
+        room = {}
+        if (rid in rdata): room = rdata[rid]
+        else: room = rldata[rid]
+        if (room['t'] in config.SKIP_TYPES): continue
         msg = i['msg']
         user = i['u']['username'].encode('utf-8')
         tokens = filter_words(msg)
@@ -43,9 +51,9 @@ def load_all_data():
         else:
             content[rid] = {}
             content[rid]['topics'] = tokens
-            content[rid]['type'] = rdata[rid]['t']
+            content[rid]['type'] = room['t']
             content[rid]['users'] = [user]
-            content[rid]['name'] = rdata[rid]['name']
+            content[rid]['name'] = room['name']
 
 
     end = time.time()

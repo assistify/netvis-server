@@ -38,3 +38,7 @@ def load_pretagged_words():
 def save_json(content):
     with open('result/json/'+config.RESULT_FILENAME+'.json', 'wb') as myfile:
         json.dump(content, myfile)
+
+def save_tagged(tagged):
+    with open('data/'+config.TAGGING_FILENAME, 'wb') as f:
+            pickle.dump(tagged, f, protocol=2)
