@@ -12,8 +12,8 @@ const logger = console
 const thresholdField = document.getElementById('threshold')
 
 let network
-let minWeight
-let maxWeight
+let minWeight = 0
+let maxWeight = 999999
 let linkIds = 1
 
 const script = document.createElement('script')
@@ -152,7 +152,7 @@ script.addEventListener('load', function () {
     }
   })
 
-  thresholdField.addEventListener('changeNode', () => {
+  thresholdField.addEventListener('change', () => {
     const nodes2Remove = []
     const nodes2Show = []
     const links2Show = []
