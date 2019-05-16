@@ -18,7 +18,7 @@ module.exports = ({model}) => {
       data.links = {}
       data.links.topics = topics.map(prepareTopic)
       data.links.persons = persons.map(preparePerson)
-      data.weight = (data.links.topics && Math.log(data.links.topics.length + 1) / Math.log(4)) || 1
+      data.weight = (data.links.topics && Math.log(data.links.topics.length + 1)) || 1
       model.changeNode(data.id, 'rooms', data)
       return {ok: true}
 
