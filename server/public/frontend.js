@@ -44,13 +44,16 @@ script.addEventListener('load', function () {
       .call(d => this.wrap(d, 200))
   }
 
-  function prepareNode(node, threshold) {
+  function prepareNode(node) {
     const weight = Math.sqrt(node.weight || 1)
-    node.visible = weight >= threshold
+    node.visible = weight >= thresholdField.value
     node.shape = 'circle'
     if (node.className === 'person') {
       node.radius = 50
       node.fontSize = 1
+      if (personFilter.dataset.active !== 'true') {
+        node.visible = false
+      }
     } else if (node.className === 'room') {
       node.radius = Math.min(node.weight * 50, 150)
       node.fontSize = weight * 2
@@ -74,7 +77,7 @@ script.addEventListener('load', function () {
     thresholdField.value = Math.ceil(data.nodes.length / 200)
     data.nodes = data.nodes.map(node => {
       types[node.type] = true
-      return prepareNode(node, thresholdField.value)
+      return prepareNode(node)
     })
     const base = '?' + (sourceMatch ? 'u=' + sourceMatch[2] + '&' : '')
     const createOption = type => icons[type + 's'] ? {type, text: icons[type + 's'] + ' ' + texts[type + 's']} : null
