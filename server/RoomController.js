@@ -3,7 +3,7 @@
 const faker = require('faker')
 
 const names = {}
-let nameId = 1
+let sequence = 1
 
 module.exports = ({model}) => {
   return {
@@ -13,6 +13,7 @@ module.exports = ({model}) => {
       const persons = data.users || []
       delete data.users
       data.className = 'room'
+      data.id = data.id || 'room_' + sequence++
       model.addNode('room', data)
 
       data.links = {}
@@ -27,19 +28,18 @@ module.exports = ({model}) => {
         if (!existing) {
           topic.className = 'topic'
           model.addNode('topic', topic)
+          topic.id = topic.id || 'topic_' + sequence++
         }
         return model.addLink(data, existing || topic)
       }
 
       function preparePerson(name) {
-        if (!names[name]) {
-          names[name] = {id: 'person_' + nameId++, name: faker.name.findName()}
-        }
-        const person = Object.assign({className: 'person', weight: 1}, names[name])
-        const existing = model.getById('person', names[name].id)
-        if (!existing) {
+        const person = names[name] || {className: 'person', weight: 1, name: faker.name.findName()}
+        if (!person.id) {
+          person.id = person.id || 'person_' + sequence++
           model.addNode('person', person)
         }
+        names[name] = person
         return model.addLink(data, person)
       }
     }

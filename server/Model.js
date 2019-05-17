@@ -36,7 +36,7 @@ module.exports = class Model {
   }
 
   find(type, node) {
-    return this.store[type + 's'].find(n => n.id === node.id || n.name === node.name)
+    return this.store[type + 's'].find(n => n.id === node.id || (!node.id && n.name === node.name))
   }
 
   addNode(type, node) {
@@ -45,13 +45,14 @@ module.exports = class Model {
     }
     const existing = this.find(type, node)
     if (existing) {
-      existing.weight += node.weight
+      existing.weight = Math.sqrt(existing.weight * existing.weight + node.weight)
       this.notifyListeners({type: 'changeNode', node: existing})
       return existing.id
     } else {
       if (!node.id) {
         node.id = type + '_' + node.name
       }
+      node.weight = Math.sqrt(node.weight || 1)
       this.store[type + 's'].push(node)
       this.notifyListeners({type: 'addNode', node})
       return node.id

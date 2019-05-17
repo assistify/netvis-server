@@ -14,7 +14,7 @@ const personFilter = document.getElementById('filter-persons')
 
 let network
 let minWeight = 0
-let maxWeight = 999999
+let maxWeight = Number.MAX_VALUE
 let linkIds = 1
 
 const script = document.createElement('script')
@@ -45,8 +45,8 @@ script.addEventListener('load', function () {
   }
 
   function prepareNode(node) {
-    const weight = Math.sqrt(node.weight || 1)
-    node.visible = weight >= thresholdField.value
+    node.weight = node.weight || 1
+    node.visible = node.weight >= thresholdField.value
     node.shape = 'circle'
     if (node.className === 'person') {
       node.radius = 50
@@ -56,10 +56,10 @@ script.addEventListener('load', function () {
       }
     } else if (node.className === 'room') {
       node.radius = Math.min(node.weight * 50, 150)
-      node.fontSize = weight * 2
+      node.fontSize = node.weight * 2
     } else {
       node.radius = Math.min(node.weight * 10, 250)
-      node.fontSize = weight
+      node.fontSize = node.weight
     }
     return node
   }
@@ -84,8 +84,8 @@ script.addEventListener('load', function () {
     const createLink = o => '<a href="' + base + 't=' + o.type + '">' + o.text + '</a>'
     const options = Object.keys(types).map(createOption).filter(d => d)
     document.querySelector('.selection').innerHTML = options.length > 1 ? options.map(createLink).join('\n') : ''
-    minWeight = data.nodes.reduce((min, n) => Math.min(n.weight, min), 99999999)
-    maxWeight = data.nodes.reduce((max, n) => Math.max(n.weight, max), 0)
+    minWeight = data.nodes.reduce((min, n) => Math.min(n.weight || minWeight, min), Number.MAX_VALUE)
+    maxWeight = data.nodes.reduce((max, n) => Math.max(n.weight || maxWeight, max), 0)
     updateAndLogWeightRange()
     return data
   }
