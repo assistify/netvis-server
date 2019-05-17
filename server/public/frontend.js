@@ -13,8 +13,6 @@ const thresholdField = document.getElementById('threshold')
 const personFilter = document.getElementById('filter-persons')
 
 let network
-let minWeight = 0
-let maxWeight = Number.MAX_VALUE
 let linkIds = 1
 
 const script = document.createElement('script')
@@ -64,14 +62,6 @@ script.addEventListener('load', function () {
     return node
   }
 
-  function updateAndLogWeightRange(newValue) {
-    if (newValue) {
-      minWeight = Math.min(minWeight, newValue)
-      maxWeight = Math.max(maxWeight, newValue)
-    }
-    logger.info('Weight range: ' + minWeight + '...' + maxWeight)
-  }
-
   function prepare(data) {
     const types = {}
     thresholdField.value = Math.ceil(data.nodes.length / 200)
@@ -84,9 +74,6 @@ script.addEventListener('load', function () {
     const createLink = o => '<a href="' + base + 't=' + o.type + '">' + o.text + '</a>'
     const options = Object.keys(types).map(createOption).filter(d => d)
     document.querySelector('.selection').innerHTML = options.length > 1 ? options.map(createLink).join('\n') : ''
-    minWeight = data.nodes.reduce((min, n) => Math.min(n.weight || minWeight, min), Number.MAX_VALUE)
-    maxWeight = data.nodes.reduce((max, n) => Math.max(n.weight || maxWeight, max), 0)
-    updateAndLogWeightRange()
     return data
   }
 
@@ -219,7 +206,6 @@ script.addEventListener('load', function () {
 
         case 'addNode':
           network.addNode(prepareNode(msg.node))
-          updateAndLogWeightRange(msg.node.weight)
           network.update()
           break
 
@@ -230,7 +216,6 @@ script.addEventListener('load', function () {
 
         case 'changeNode':
           network.updateNode(prepareNode(msg.node))
-          updateAndLogWeightRange(msg.node.weight)
           network.update()
           break
 

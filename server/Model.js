@@ -45,14 +45,12 @@ module.exports = class Model {
     }
     const existing = this.find(type, node)
     if (existing) {
-      existing.weight = Math.sqrt(existing.weight * existing.weight + node.weight)
       this.notifyListeners({type: 'changeNode', node: existing})
       return existing.id
     } else {
       if (!node.id) {
         node.id = type + '_' + node.name
       }
-      node.weight = Math.sqrt(node.weight || 1)
       this.store[type + 's'].push(node)
       this.notifyListeners({type: 'addNode', node})
       return node.id

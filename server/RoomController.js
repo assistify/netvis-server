@@ -14,12 +14,12 @@ module.exports = ({model}) => {
       delete data.users
       data.className = 'room'
       data.id = data.id || 'room_' + sequence++
+      data.weight = 1
       model.addNode('room', data)
 
       data.links = {}
       data.links.topics = topics.map(prepareTopic)
       data.links.persons = persons.map(preparePerson)
-      data.weight = (data.links.topics && Math.log(data.links.topics.length + 1)) || 1
       model.changeNode(data.id, 'rooms', data)
       return {ok: true}
 
@@ -30,6 +30,7 @@ module.exports = ({model}) => {
           model.addNode('topic', topic)
           topic.id = topic.id || 'topic_' + sequence++
         }
+        data.weight = Math.sqrt(data.weight * data.weight + topic.weight)
         return model.addLink(data, existing || topic)
       }
 
