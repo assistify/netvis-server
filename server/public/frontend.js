@@ -52,12 +52,9 @@ script.addEventListener('load', function () {
       if (personFilter.dataset.active !== 'true') {
         node.visible = false
       }
-    } else if (node.className === 'room') {
-      node.radius = Math.min(node.weight * 50, 150)
-      node.fontSize = node.weight * 2
     } else {
-      node.radius = Math.min(node.weight * 10, 250)
-      node.fontSize = node.weight
+      node.radius = Math.min(node.weight * 50, 250)
+      node.fontSize = node.weight * 2
     }
     return node
   }
