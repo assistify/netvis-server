@@ -54,6 +54,7 @@ def load_all_data():
             content[rid]['type'] = room['t']
             content[rid]['users'] = [user]
             content[rid]['name'] = room['name']
+            content[rid]['id'] = rid
 
 
     end = time.time()
